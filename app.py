@@ -66,40 +66,61 @@ def format_func(bar):
 # read csv from a URL
 
 def get_bars(symbol, interval='1m', limit = 1000):
+    root_url = 'https://api.binance.com/api/v1/klines'
     url = root_url + '?symbol=' + symbol + '&interval=' + interval + '&limit=' + str(limit)
     data = json.loads(requests.get(url).text)
-    df = pd.DataFrame(data)
-    df.columns = ['open_time',
+    # df = pd.DataFrame(data)
+    keys = ['open_time',
                   'open', 'high', 'low', 'close', 'volume',
                   'close_time', 'qav', 'num_trades',
                   'taker_base_vol', 'taker_quote_vol', 'ignore']
-    df.index = [datetime.datetime.fromtimestamp(x / 1000.0).strftime("%Y/%m/%d %H:%M:%S") for x in df.close_time]
-    return df
+    
+    res = []
+    for d in data:
+        dict1 = dict(zip(keys, d))
+        dict1['symbol'] = symbol
+        res.append(dict1)
+        # print(dict1)
+    # df.index = [datetime.datetime.fromtimestamp(x / 1000.0).strftime("%Y/%m/%d %H:%M:%S") for x in df.close_time]
+    return pd.DataFrame(res)
+
+def choose_volume(rank):
+
+    url = "https://api.binance.com/api/v3/ticker/24hr"
+    data = json.loads(requests.get(url).text)
+
+    volume = pd.DataFrame(data).set_index('symbol')[['volume']].astype(float).sort_values(ascending=False, by = 'volume')
+    volume = volume.loc[[x for x in volume.index if 'USDT' in x], :]
+    selected = volume.index[:rank]
+    
+    # data = data1 + data2 + data3 + data4
+    return selected.tolist()
 
 
 # @st.cache(allow_output_mutation=True)
 def combine(interval, rank=10, limit = 1000):
+    selected = choose_volume(rank)
+    
 
-    data = {}
-    volume = {}
-    for perp in perps:
+    data = pd.DataFrame()
+    for perp in selected:
         try:
-            data[perp] = get_bars(perp, interval, limit)
-            volume[perp] = float(data[perp].iloc[-1, :].volume)
+            data = pd.concat([data, get_bars(perp, interval, limit)], axis = 0, join = 'outer')
+            # volume[perp] = float(data[perp].iloc[-1, :].volume)
             # print(volume[perp])
 
         except:
             pass
 
-    selected = sorted(volume, key=volume.get, reverse=True)[:rank]
+    # selected = sorted(volume, key=volume.get, reverse=True)[:rank]
 
-    close = {}
-    for p in selected:
-        close[p] = data[p].close.astype(float)
+    # close_df = pd.DataFrame(data).set_index('close_time')[['close']]
+    temp = data.set_index('symbol')[['close', 'close_time']].reset_index()
+    close = temp.pivot(index = 'close_time', columns='symbol', values='close')
+    close.index = [datetime.datetime.fromtimestamp(x / 1000.0).strftime("%Y/%m/%d %H:%M:%S") for x in close.index]
+    
 
-    close_df = pd.DataFrame(close)
-
-    return close_df, selected
+    return close, selected
 
 # top-level filters
 
