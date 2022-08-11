@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 import os
 from datetime import datetime, timedelta
-from process_data import _extract_volume, _extract_close
+# from process_data import _extract_volume, _extract_close
 
 from cmath import nan
 
-from tqdm import tqdm
+# from tqdm import tqdm
 
 import altair as alt
 
