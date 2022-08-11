@@ -120,7 +120,7 @@ def combine(interval, rank=10, limit = 1000):
     close.index = [datetime.datetime.fromtimestamp(x / 1000.0).strftime("%Y/%m/%d %H:%M:%S") for x in close.index]
     
 
-    return close, selected
+    return close.astype(float), selected
 
 # top-level filters
 
