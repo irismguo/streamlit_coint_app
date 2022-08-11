@@ -51,6 +51,8 @@ def plot_coint(close, interval):
     for coin in coins:
         plot_df.loc[coin, :] = plot_df.loc[:, coin]
 
+    st.dataframe(plot_df)
+
     # print(plot_df)
 
     lmt = plot_df.reset_index().melt(id_vars='index', var_name='coin', value_name='p')
