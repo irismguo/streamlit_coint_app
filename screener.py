@@ -32,7 +32,7 @@ def _filter_volume(path, rank=10):
 def plot_coint(close, interval):
     coins = close.columns
     price = np.log(close).dropna()
-    print(price)
+    # print(price)
     # print(price.columns)
 
     plot_df = pd.DataFrame(index=coins)
@@ -54,7 +54,7 @@ def plot_coint(close, interval):
     for coin in coins:
         plot_df.loc[coin, :] = plot_df.loc[:, coin]
 
-    print(plot_df)
+    # print(plot_df)
 
     lmt = plot_df.reset_index().melt(id_vars='symbol', var_name='coin', value_name='p')
     # print(lmt)
