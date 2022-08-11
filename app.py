@@ -121,8 +121,8 @@ def refresh(rank, interval1, interval2, limit1, limit2):
     df1 = combine(interval1, rank, limit1)
     df5 = combine(interval2, rank, limit2)
 
-    if 'data' not in st.session_state:
-        st.session_state.data = [df1, df5]
+#     if 'data' not in st.session_state:
+    st.session_state.data = [df1, df5]
     # st.balloons()
     st.session_state.load = True
 
