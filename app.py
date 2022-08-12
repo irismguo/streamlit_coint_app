@@ -162,7 +162,7 @@ def refresh(rank, interval1, interval2, limit1, limit2):
 
             with fig_col1:
                 st.markdown(f"### {format_func(interval1)}")
-                st.markdown('Close Price at Server Time {}'.format(df1[0].index[-1]))
+                st.markdown('Last Close Time at Server Time {}'.format(df1[0].index[-1]))
 
                 st.write(fig1)
 
@@ -172,7 +172,7 @@ def refresh(rank, interval1, interval2, limit1, limit2):
                 if st.session_state.load:
                     st.markdown(f"### {format_func(interval2)}")
 
-                    st.markdown('Close Price at Server Time {}'.format(df5[0].index[-1]))
+                    st.markdown('Last Close Time at Server Time {}'.format(df5[0].index[-1]))
                 # st.markdown("###### Updated {}".format(datetime.datetime.now()))
 
                     st.write(fig2)
@@ -210,31 +210,31 @@ def freeze(f1, f5, df1, df5, fig1, fig2, interval1, interval2):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("##### Cointegration Parameters for One Minute")
+        st.markdown(f"##### Cointegration Parameters for {format_func(interval1)}")
         st.dataframe(fitdf)
 
-        csv_downloader(one_min_close, f'{interval1[:-1]}_min_close', f'{interval1[:-1]} Minute Close Price')
+        csv_downloader(one_min_close, f'{format_func(interval1).lower()}_close', f'{format_func(interval1)} Close Price')
 
-        csv_downloader(spreaddf, f'spread_{interval1[:-1]}_min', f'{interval1[:-1]} Minute Spread')
+        csv_downloader(spreaddf, f'spread_{format_func(interval1).lower()}', f'{format_func(interval1)} Spread')
 
-        st.markdown("#### Cointegration Parameters for Five Minute")
+        st.markdown(f"##### Cointegration Parameters for {format_func(interval2)}")
 
         st.dataframe(fitdf_)
 
-        csv_downloader(five_min_close, f'{interval2[:-1]}_min_close', f'{interval2[:-1]} Minute Close Price')
+        csv_downloader(five_min_close, f'{format_func(interval2).lower()}_close', f'{format_func(interval2)}Close Price')
 
-        csv_downloader(spreaddf_, f'spread_{interval2[:-1]}_min', f'{interval2[:-1]} Minute Spread')
+        csv_downloader(spreaddf_, f'spread_{format_func(interval2).lower()}', f'{format_func(interval2).lower()} Spread')
 
 
     with col2:
         st.markdown(f"### {format_func(interval1)}")
-        st.markdown('Close Price at Server Time {}'.format(
+        st.markdown('Last Close Time at Server Time {}'.format(
             one_min_close.index[-1]))
         st.write(fig1)
 
 
         st.markdown(f"### {format_func(interval2)}")
-        st.markdown('Close Price at Server Time {}'.format(
+        st.markdown('Last Close Time at Server Time {}'.format(
             five_min_close.index[-1]))
         # st.markdown("###### Updated {}".format(datetime.datetime.now()))
         st.write(fig2)
